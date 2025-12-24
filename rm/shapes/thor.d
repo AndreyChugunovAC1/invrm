@@ -20,8 +20,24 @@ class Thor : Shape
   override float getDistance(Vec3 point)
   {
     Vec3 a = point - pos;
-    Vec3 b = n.cross(a.cross(n)).norm(); // TODO corner case with cross
+    Vec3 b = n.cross(a.cross(n));
 
-    return ((pos + b * rBig) - point).len() - rSmall;
+    if (b.len2() <= Vec3.min_square_length)
+    {
+      import std.math : sqrt;
+      return sqrt(a.len2() + rBig ^^ 2) - rSmall;
+    }
+
+    return (pos + b.norm() * rBig - point).len() - rSmall;
+  }
+
+  override Vec3 getNorm(Vec3 point)
+  {
+    Vec3 a = point - pos;
+    Vec3 b = n.cross(a.cross(n));
+
+    // assuming point is on surface - no corner cases:
+    Vec3 c = pos + b.norm() * rBig;
+    return (point - c).norm();
   }
 }

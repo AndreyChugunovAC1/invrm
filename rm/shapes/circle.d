@@ -19,4 +19,9 @@ class Circle : Shape
   {
     return (point - center).len() - radius;
   }
+
+  override Vec3 getNorm(Vec3 point) const
+  {
+    return (point - center).norm();
+  }
 }

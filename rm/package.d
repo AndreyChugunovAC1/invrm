@@ -8,5 +8,6 @@ public import
   rm.base.lighting,
   rm.shapes.shape,
   rm.shapes.thor,
-  rm.shapes.circle;
+  rm.shapes.circle,
+  rm.shapes.plane;
 

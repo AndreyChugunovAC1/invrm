@@ -1,7 +1,7 @@
 module drawing;
 
 import std.file;
-import std.stdio;
+import std.stdio : File;
 
 import geom;
 
@@ -12,11 +12,7 @@ struct Color
 
   static Color fromVec3(Vec3 color)
   {
-    foreach (ref coord; color)
-    {
-      import std.algorithm;
-      coord = clamp(coord, 0, 1);
-    }
+    color = color.clamp();
     Vec3 scaledColor = color * 255;
     return Color([
       cast(ubyte) scaledColor[0],
@@ -39,24 +35,18 @@ struct Buffer
     this.data = new Color[width * height];
   }
 
-  auto opIndexAssign(Color color, size_t x, size_t y)
-  {
-    data[y * width + x] = color;
-    return color;
-  }
-
-  ref auto opIndex(size_t x, size_t y)
+  ref Color opIndex(size_t x, size_t y)
   {
     return data[y * width + x];
   }
-}
 
-void dumpBuffer(string filename, const(Buffer) buffer)
-{
-  auto f = File(filename, "wb");
+  void dumpBufferToPPM(string filename)
+  {
+    auto f = File(filename, "wb");
 
-  f.write("P6\n", buffer.width, " ", buffer.height, " 255\n");
-  foreach (pixel; buffer.data)
-    f.rawWrite(pixel);
-  f.close();
+    f.write("P6\n", width, " ", height, " 255\n");
+    foreach (pixel; data)
+      f.rawWrite(pixel);
+    f.close();
+  }
 }

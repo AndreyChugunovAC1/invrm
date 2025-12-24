@@ -2,7 +2,6 @@ module rm.base.scene;
 
 import std.algorithm : map, fold, min;
 
-import drawing;
 import geom;
 import rm.shapes.shape;
 import rm.base.lighting;
@@ -11,14 +10,14 @@ struct Scene
 {
   Shape[] shapes;
   Light[] lights;
-  Color fontColor;
+  Vec3 fontColor;
   Vec3 illa;
 
   this(Shape[] shapes, Light[] lights, Vec3 fontColor = Vec3.zero, Vec3 illa = Vec3(1))
   {
     this.shapes = shapes;
     this.lights = lights;
-    this.fontColor = Color.fromVec3(fontColor);
+    this.fontColor = fontColor;
     this.illa = illa;
   }
 
