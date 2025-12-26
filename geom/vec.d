@@ -1,6 +1,7 @@
 module geom.vec;
 
-import std.math : sqrt;
+import std.math : sqrt, abs;
+import geom.base;
 
 @nogc @safe
 struct Vec(size_t N) if (N > 1)
@@ -13,7 +14,6 @@ struct Vec(size_t N) if (N > 1)
 
   enum zero = VecCur(0);
   enum one = VecCur(1);
-  enum min_square_length = 1.0e-4;
 
   this(float value)
   {
@@ -92,8 +92,8 @@ struct Vec(size_t N) if (N > 1)
     }
   }
 
-  float len2() const => dot(this);
-  float len() const => sqrt(len2);
+  float len2() const => this.dot(this);
+  float len() const => sqrt(this.len2());
 
   VecCur norm() const
   {
@@ -106,9 +106,9 @@ struct Vec(size_t N) if (N > 1)
   {
     float l2 = len2();
 
-    if (l2 < min_square_length)
+    if (l2 < N * EPSILON_SQUARED)
     {
-      this = zero;
+      return this;
     }
 
     return this /= sqrt(l2);
@@ -127,6 +127,25 @@ struct Vec(size_t N) if (N > 1)
     return res;
   }
 
+  bool isZero() const
+  {
+    auto res = true;
+
+    static foreach (i; 0 .. N)
+    {
+      res &= abs(coords[i]) < EPSILON;
+    }
+    return res;
+  }
+
+  /// def for perpendicularity:
+  ///   |v| < EPSILON or |u| < EPSILON or |vu| < EPSILON
+  /// - not EPSILON_SQUARE, just because
+  bool isPerpWith(VecCur v) const =>
+    this.isZero ||
+    v.isZero ||
+    abs(this.dot(v)) < EPSILON;
+
   /// Returns any vector, perpendicular to this.
   /// If vector has almost zero length, when there is no guarantee.
   VecCur anyPerp() const
@@ -141,14 +160,13 @@ struct Vec(size_t N) if (N > 1)
       // https://en.wikipedia.org/wiki/Hairy_ball_theorem
       // Also it means, that you can not just write function f(v),
       // where for each v: f(v) not parallel to v.
-      // Overwise, it would mean, that cross(f(v), v) always _|_ v
+      // Overwise, it would mean, that cross(f(v), v) _|_ v,
+      // that is impossible.
 
-      VecCur res = cross(VecCur(1, 0, 0));
-      if (res.len2() < min_square_length)
-      {
-        return VecCur(0, 1, 0);
-      }
-      return res;
+      int isZeroXY = abs(coords[0]) < EPSILON && abs(coords[1]) < EPSILON;
+      int isNonZeroXY = 1 - isZeroXY;
+
+      return VecCur(isNonZeroXY * (-coords[1]), isNonZeroXY * coords[0] + isZeroXY, 0);
     }
     else
     {
@@ -160,7 +178,27 @@ struct Vec(size_t N) if (N > 1)
 alias Vec2 = Vec!2;
 alias Vec3 = Vec!3;
 
-unittest
+@safe @nogc
+unittest  // any perp test
 {
+  bool checkPerp(Vec3 v) =>
+    v.isPerpWith(v.anyPerp());
 
+  bool checkCorrectPerp(Vec3 v)
+  {
+    auto u = v.anyPerp();
+
+    // v!=0 => u!=0 and v _|_ u
+    return v.isPerpWith(u) && (v.isZero || !u.isZero);
+  }
+
+  assert(checkCorrectPerp(Vec3(1, 1, 1)));
+  assert(checkCorrectPerp(Vec3(0, 0, 1)));
+  assert(checkCorrectPerp(Vec3(0, 1, 1)));
+  assert(checkCorrectPerp(Vec3(EPSILON, EPSILON, 1)));
+  assert(checkCorrectPerp(Vec3(EPSILON, -EPSILON, 1)));
+  assert(checkPerp(Vec3(EPSILON, EPSILON, EPSILON)));
+  assert(checkPerp(Vec3(EPSILON, EPSILON, EPSILON)));
+  assert(checkPerp(Vec3(EPSILON, EPSILON, -EPSILON)));
+  assert(checkPerp(Vec3(EPSILON, -EPSILON, EPSILON)));
 }

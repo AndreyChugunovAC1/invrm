@@ -1,3 +1,4 @@
 module geom;
 
-public import geom.vec;
+public import geom.base,
+  geom.vec;

@@ -22,7 +22,7 @@ class Thor : Shape
     Vec3 a = point - pos;
     Vec3 b = n.cross(a.cross(n));
 
-    if (b.len2() <= Vec3.min_square_length)
+    if (b.isZero)
     {
       import std.math : sqrt;
       return sqrt(a.len2() + rBig ^^ 2) - rSmall;

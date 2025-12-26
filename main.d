@@ -16,7 +16,10 @@ void main(string[] args)
   size_t width, height;
 
   if (args.length != 3)
+  {
     printUsage();
+    return;
+  }
 
   try
   {
@@ -42,11 +45,11 @@ void main(string[] args)
   );
   auto rm = new Rm(
     frame.width, frame.height,
-    User(Vec3(0, 0, 0), Vec3(1, 0, 0), 1, 1),
+    User(Vec3(0, 0, 0), Vec3(1, 0, 1), 1, 1),
     Scene([
-      new Circle(Vec3(30, 0, 0), 2.5, mat),
-      // new Thor(Vec3(30, 5, 30), Vec3(3, 3, -1), 5, 1, mat2),
-      new Thor(Vec3(30, 0, 0), Vec3(-1, 0, 0), 5, 1, mat2),
+      new Circle(Vec3(20, 5, 20), 2.5, mat),
+      new Thor(Vec3(20, 5, 20), Vec3(3, 3, -1), 5, 1, mat2),
+      // new Thor(Vec3(30, 0, 0), Vec3(-1, 0, 0), 5, 1, mat2),
       // new Plane(0, Vec3(0, 1, 0), mat)
     ],
     [

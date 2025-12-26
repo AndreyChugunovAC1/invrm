@@ -7,7 +7,6 @@ import rm.base.material;
 
 abstract class Shape
 {
-  enum epsilon = 1.0e-2f;
   Material mat;
 
   this(Material mat)
@@ -22,9 +21,9 @@ abstract class Shape
   Vec3 getNorm(Vec3 point)
   {
     Vec3 n = Vec3(
-      getDistance(point + Vec3(epsilon, 0, 0)) - getDistance(point + Vec3(-epsilon, 0, 0)),
-      getDistance(point + Vec3(0, epsilon, 0)) - getDistance(point + Vec3(0, -epsilon, 0)),
-      getDistance(point + Vec3(0, 0, epsilon)) - getDistance(point + Vec3(0, 0, -epsilon)),
+      getDistance(point + Vec3(SMALL_VALUE, 0, 0)) - getDistance(point + Vec3(-SMALL_VALUE, 0, 0)),
+      getDistance(point + Vec3(0, SMALL_VALUE, 0)) - getDistance(point + Vec3(0, -SMALL_VALUE, 0)),
+      getDistance(point + Vec3(0, 0, SMALL_VALUE)) - getDistance(point + Vec3(0, 0, -SMALL_VALUE)),
     );
     return n.norm();
   }
