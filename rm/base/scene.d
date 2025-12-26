@@ -37,7 +37,8 @@ struct Scene
     {
       float dist = sh.getDistance(point);
 
-      if (dist < mind) {
+      if (dist < mind)
+      {
         mind = dist;
         cur = sh;
       }

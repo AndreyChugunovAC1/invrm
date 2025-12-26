@@ -1,6 +1,7 @@
 module rm.base.rm;
 
 import std.math : abs, pow;
+import std.typecons : Nullable, nullable;
 
 import geom;
 import rm.base.user;
@@ -9,20 +10,33 @@ import rm.shapes.shape;
 
 class Rm
 {
-  User user;
-  Scene scene;
-  size_t width;
-  size_t height;
+  private
+  {
+    User user;
+    Scene scene;
+    size_t width = 100;
+    size_t height = 100;
+    uint recLimit = 3;
+  }
 
-  this(size_t width, size_t height, User user, Scene scene)
+  this(User user, Scene scene)
   {
     this.user = user;
     this.scene = scene;
-    this.width = width;
-    this.height = height;
   }
 
-  import std.typecons : Nullable, nullable;
+  Rm setRecLimit(uint limit)
+  {
+    recLimit = limit;
+    return this;
+  }
+
+  Rm setWidthHeight(size_t width, size_t height)
+  {
+    this.width = width;
+    this.height = height;
+    return this;
+  }
 
   /// dir must be normalized before the function call
   /// for optimization purposes
@@ -47,9 +61,9 @@ class Rm
 
   /// dir must be normalized before the function call
   /// for optimization purposes
-  Vec3 traceRay(Vec3 start, Vec3 dir, int depth = 0)
+  Vec3 traceRay(Vec3 start, Vec3 dir, uint depth = 0)
   {
-    if (depth >= 3) // TODO: magic number
+    if (depth >= recLimit)
     {
       return scene.fontColor;
     }
@@ -76,7 +90,8 @@ class Rm
       Vec3 toLighting = (light.pos - curPoint).norm();
 
       // TODO: smooth shadows
-      bool isNotShadowed = moveToNextIntersection(curPoint + toLighting * SMALL_VALUE, toLighting).isNull;
+      bool isNotShadowed = moveToNextIntersection(curPoint + toLighting * SMALL_VALUE, toLighting)
+        .isNull;
 
       if (isNotShadowed)
       {
@@ -88,8 +103,11 @@ class Rm
     }
 
     // reflection:
-    Vec3 reflected = 2 * n * n.dot(toUser) - toUser; // automatically normalized
-    color += sh.mat.rflk * traceRay(curPoint + SMALL_VALUE * reflected, reflected, depth + 1);
+    if (sh.mat.rflk == 0.0f)
+    {
+      Vec3 reflected = 2 * n * n.dot(toUser) - toUser; // automatically normalized
+      color += sh.mat.rflk * traceRay(curPoint + SMALL_VALUE * reflected, reflected, depth + 1);
+    }
 
     return color.clamp();
   }

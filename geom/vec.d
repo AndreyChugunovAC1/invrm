@@ -1,6 +1,8 @@
 module geom.vec;
 
 import std.math : sqrt, abs;
+import std.traits : isNumeric;
+
 import geom.base;
 
 @nogc @safe
@@ -44,15 +46,15 @@ struct Vec(size_t N) if (N > 1)
   }
 
   VecCur opBinary(string op, R)(R rhs) const pure
-  if (is(R : float) || is(R : double) || is(R : real))
+  if (isNumeric!R)
   {
     VecCur res = void;
     mixin("res.coords[] = coords[]" ~ op ~ "rhs;");
     return res;
   }
 
-  ref VecCur opOpAssign(string op, T)(T value)
-      if (is(T : float) || is(T : double) || is(T : real))
+  ref VecCur opOpAssign(string op, T)(T value) pure
+  if (isNumeric!T)
   {
     mixin("this.coords[]" ~ op ~ "= value;");
     return this;
@@ -65,7 +67,7 @@ struct Vec(size_t N) if (N > 1)
   }
 
   VecCur opBinaryRight(string op, L)(L lhs) const pure
-  if (is(L : float) || is(L : double) || is(L : real))
+  if (isNumeric!L)
   {
     VecCur res = void;
     mixin("res.coords[] = coords[]" ~ op ~ "lhs;");

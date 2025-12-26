@@ -42,17 +42,14 @@ void main(string[] args)
   auto mat2 = new Material(
     Vec3(0.04, 0.01, 0.01),
     Vec3(0.5, 0.1, 0.1),
-    Vec3(0.5, 0.1, 0.1),
-    0.9
+    Vec3(0.5, 0.1, 0.1)
   );
   auto mat3 = new Material(
     Vec3(0.04, 0.08, 0.06),
     Vec3(0.1, 0.7, 0.1),
-    Vec3(0.3, 0.8, 0.1),
-    0.9
+    Vec3(0.3, 0.8, 0.1)
   );
   auto rm = new Rm(
-    frame.width, frame.height,
     User(Vec3(0, 0, 0), Vec3(1, 0, 1), 1, 1),
     Scene([
       new Circle(Vec3(20, 0, 20), 2.5, mat),
@@ -69,6 +66,9 @@ void main(string[] args)
       new Light(Vec3(0, -10, 20), Vec3(0.5, 0.4, 0.8), Vec3(1, 0.6, 0.8))
     ],
     Vec3(0.03, 0.042, 0.08)));
+
+  rm.setWidthHeight(width, height)
+    .setRecLimit(3);
 
   foreach (y; 0 .. frame.height)
   {
