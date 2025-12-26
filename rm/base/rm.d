@@ -24,7 +24,8 @@ class Rm
 
   import std.typecons : Nullable, nullable;
 
-  /// dir must be normalized for optimization purposes
+  /// dir must be normalized before the function call
+  /// for optimization purposes
   Nullable!Vec3 moveToNextIntersection(Vec3 curPoint, Vec3 dir)
   {
     float d = void;
@@ -44,14 +45,15 @@ class Rm
     }
   }
 
+  /// dir must be normalized before the function call
+  /// for optimization purposes
   Vec3 traceRay(Vec3 start, Vec3 dir, int depth = 0)
   {
-    if (depth >= 5) // TODO: magic number
+    if (depth >= 3) // TODO: magic number
     {
       return scene.fontColor;
     }
 
-    dir.normMe();
     auto intersection = moveToNextIntersection(start, dir);
 
     if (intersection.isNull)
@@ -63,7 +65,12 @@ class Rm
     Shape sh = scene.getNearest(curPoint);
     Vec3 n = sh.getNorm(curPoint);
 
+    // no lights color:
     Vec3 color = sh.mat.ka * scene.illa;
+
+    // lights:
+    Vec3 toUser = (user.pos - curPoint).norm();
+
     foreach (light; scene.lights)
     {
       Vec3 toLighting = (light.pos - curPoint).norm();
@@ -73,15 +80,17 @@ class Rm
 
       if (isNotShadowed)
       {
-        Vec3 toUser = (user.pos - curPoint).norm();
-        Vec3 reflected = 2 * n * n.dot(toLighting) - toLighting;
+        Vec3 reflected = 2 * n * n.dot(toLighting) - toLighting; // automatically normalized
 
         color += (sh.mat.kd * toLighting.dot(n) * light.illd).clamp();
         color += (sh.mat.ks * pow(toUser.dot(reflected), sh.mat.alpha) * light.ills).clamp();
       }
-
-      
     }
+
+    // reflection:
+    Vec3 reflected = 2 * n * n.dot(toUser) - toUser; // automatically normalized
+    color += sh.mat.rflk * traceRay(curPoint + SMALL_VALUE * reflected, reflected, depth + 1);
+
     return color.clamp();
   }
 
@@ -91,6 +100,6 @@ class Rm
     float yr = user.height * (cast(float) height / 2 - y) / width; // width here is needed
     Vec3 dir = user.dir * user.dist + user.right * xr + user.up * yr;
 
-    return traceRay(user.pos + dir, dir);
+    return traceRay(user.pos + dir, dir.norm());
   }
 }

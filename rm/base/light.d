@@ -1,4 +1,4 @@
-module rm.base.lighting;
+module rm.base.light;
 
 import geom;
 

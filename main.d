@@ -34,28 +34,41 @@ void main(string[] args)
 
   auto frame = Buffer(width, height);
   auto mat = new Material(
-    Vec3(0.01, 0.01, 0.05),
-    Vec3(0.1, 0.1, 0.5),
-    Vec3(0.1, 0.1, 0.5)
+    Vec3(0.05, 0.06, 0.15),
+    Vec3(0.05, 0.06, 0.15),
+    Vec3(0.05, 0.06, 0.15),
+    0.9
   );
   auto mat2 = new Material(
     Vec3(0.04, 0.01, 0.01),
     Vec3(0.5, 0.1, 0.1),
-    Vec3(0.5, 0.1, 0.1)
+    Vec3(0.5, 0.1, 0.1),
+    0.9
+  );
+  auto mat3 = new Material(
+    Vec3(0.04, 0.08, 0.06),
+    Vec3(0.1, 0.7, 0.1),
+    Vec3(0.3, 0.8, 0.1),
+    0.9
   );
   auto rm = new Rm(
     frame.width, frame.height,
     User(Vec3(0, 0, 0), Vec3(1, 0, 1), 1, 1),
     Scene([
-      new Circle(Vec3(20, 5, 20), 2.5, mat),
-      new Thor(Vec3(20, 5, 20), Vec3(3, 3, -1), 5, 1, mat2),
+      new Circle(Vec3(20, 0, 20), 2.5, mat),
+      new Circle(Vec3(10, 0, 20), 2.5, mat),
+      new Circle(Vec3(20, 0, 10), 2.5, mat),
+      new Thor(Vec3(20, 5, 20), Vec3(0, 1, 0), 5, 1, mat2),
+      new Thor(Vec3(20, -5, 20), Vec3(0, 1, 0), 10, 1, mat3),
       // new Thor(Vec3(30, 0, 0), Vec3(-1, 0, 0), 5, 1, mat2),
       // new Plane(0, Vec3(0, 1, 0), mat)
     ],
     [
       // new Light(Vec3(0), Vec3(1, 1, 1), Vec3(1, 1, 1)),
-      new Light(Vec3(0, 20, 0), Vec3(1, 0.1, 0.1), Vec3(1, 0.1, 0.1))
-    ]));
+      new Light(Vec3(15, 20, 0), Vec3(1, 0.1, 0.1), Vec3(1, 0.1, 0.1)),
+      new Light(Vec3(0, -10, 20), Vec3(0.5, 0.4, 0.8), Vec3(1, 0.6, 0.8))
+    ],
+    Vec3(0.03, 0.042, 0.08)));
 
   foreach (y; 0 .. frame.height)
   {

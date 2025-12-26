@@ -4,7 +4,7 @@ import std.algorithm : map, fold, min;
 
 import geom;
 import rm.shapes.shape;
-import rm.base.lighting;
+import rm.base.light;
 
 struct Scene
 {

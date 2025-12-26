@@ -158,19 +158,20 @@ struct Vec(size_t N) if (N > 1)
     {
       // It is impossible to just compute it using formula:
       // https://en.wikipedia.org/wiki/Hairy_ball_theorem
-      // Also it means, that you can not just write function f(v),
+      // Also it means, that you can not write function f(v) without if's,
+      // ternary operators, or magic with signs, or bool/int conversions,
       // where for each v: f(v) not parallel to v.
       // Overwise, it would mean, that cross(f(v), v) _|_ v,
       // that is impossible.
 
       int isZeroXY = abs(coords[0]) < EPSILON && abs(coords[1]) < EPSILON;
-      int isNonZeroXY = 1 - isZeroXY;
+      int isNotZeroXY = 1 - isZeroXY;
 
-      return VecCur(isNonZeroXY * (-coords[1]), isNonZeroXY * coords[0] + isZeroXY, 0);
+      return VecCur(isNotZeroXY * (-coords[1]), isNotZeroXY * coords[0] + isZeroXY, 0);
     }
     else
     {
-      static assert(false, "Not implemented");
+      static assert(false, "Not implemented yet");
     }
   }
 }
@@ -198,7 +199,5 @@ unittest  // any perp test
   assert(checkCorrectPerp(Vec3(EPSILON, EPSILON, 1)));
   assert(checkCorrectPerp(Vec3(EPSILON, -EPSILON, 1)));
   assert(checkPerp(Vec3(EPSILON, EPSILON, EPSILON)));
-  assert(checkPerp(Vec3(EPSILON, EPSILON, EPSILON)));
-  assert(checkPerp(Vec3(EPSILON, EPSILON, -EPSILON)));
-  assert(checkPerp(Vec3(EPSILON, -EPSILON, EPSILON)));
+  assert(checkPerp(Vec3(-EPSILON, -0, EPSILON)));
 }
