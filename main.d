@@ -33,22 +33,25 @@ void main(string[] args)
   }
 
   auto frame = Buffer(width, height);
-  auto mat = new Material(
+  auto mat = new immutable Material(
     Vec3(0.05, 0.06, 0.15),
     Vec3(0.05, 0.06, 0.15),
     Vec3(0.05, 0.06, 0.15),
     0.9
   );
-  auto mat2 = new Material(
+  auto mat2 = new immutable Material(
     Vec3(0.04, 0.01, 0.01),
     Vec3(0.5, 0.1, 0.1),
-    Vec3(0.5, 0.1, 0.1)
+    Vec3(0.5, 0.1, 0.1),
+    0.9
   );
-  auto mat3 = new Material(
+  auto mat3 = new immutable Material(
     Vec3(0.04, 0.08, 0.06),
     Vec3(0.1, 0.7, 0.1),
-    Vec3(0.3, 0.8, 0.1)
+    Vec3(0.3, 0.8, 0.1),
+    0.9
   );
+
   auto rm = new Rm(
     User(Vec3(0, 0, 0), Vec3(1, 0, 1), 1, 1),
     Scene([
@@ -70,9 +73,12 @@ void main(string[] args)
   rm.setWidthHeight(width, height)
     .setRecLimit(3);
 
-  foreach (y; 0 .. frame.height)
+  import std.range : iota;
+  import std.parallelism : parallel;
+
+  foreach (y; parallel(iota(frame.height)))
   {
-    foreach (x; 0 .. frame.width)
+    foreach (x; parallel(iota(frame.width)))
     {
       frame[x, y] = Color.fromVec3(rm.computeColor(x, y));
     }

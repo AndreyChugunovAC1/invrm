@@ -8,7 +8,7 @@ class Circle : Shape
   Vec3 center;
   float radius;
 
-  this(Vec3 center, float radius, Material mat)
+  this(Vec3 center, float radius, const(Material) mat)
   {
     super(mat);
     this.center = center;

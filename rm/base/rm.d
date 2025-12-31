@@ -103,7 +103,7 @@ class Rm
     }
 
     // reflection:
-    if (sh.mat.rflk == 0.0f)
+    if (sh.mat.rflk != 0.0f) // here it means explicit zero
     {
       Vec3 reflected = 2 * n * n.dot(toUser) - toUser; // automatically normalized
       color += sh.mat.rflk * traceRay(curPoint + SMALL_VALUE * reflected, reflected, depth + 1);
@@ -112,12 +112,23 @@ class Rm
     return color.clamp();
   }
 
-  Vec3 computeColor(size_t x, size_t y)
+  private
   {
-    float xr = user.height * (x - cast(float) width / 2) / width;
-    float yr = user.height * (cast(float) height / 2 - y) / width; // width here is needed
-    Vec3 dir = user.dir * user.dist + user.right * xr + user.up * yr;
+    Vec3 computeColorInner(float x, float y)
+    {
+      float xr = user.height * (x - cast(float) width / 2) / width;
+      float yr = user.height * (cast(float) height / 2 - y) / width; // yes, width
+      Vec3 dir = user.dir * user.dist + user.right * xr + user.up * yr;
 
-    return traceRay(user.pos + dir, dir.norm());
+      return traceRay(user.pos + dir, dir.norm());
+    }
+  }
+
+  Vec3 computeColor(float x, float y)
+  {
+    return 0.25 * (computeColorInner(x + 0.25, y + 0.25) + 
+      computeColorInner(x - 0.25, y + 0.25) + 
+      computeColorInner(x + 0.25, y - 0.25) + 
+      computeColorInner(x - 0.25, y - 0.25));
   }
 }

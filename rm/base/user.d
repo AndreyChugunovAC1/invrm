@@ -4,14 +4,10 @@ import geom;
 
 struct User
 {
-  const
-  {
-    Vec3 pos;
-    Vec3 dir;
-    Vec3 up;
-    Vec3 right;
-  }
-
+  Vec3 pos;
+  Vec3 dir;
+  Vec3 up;
+  Vec3 right;
   float dist;
   float height;
 

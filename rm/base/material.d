@@ -11,7 +11,7 @@ class Material
   float rflk; // reflection koef
   // float rfrk; // refraction koef
 
-  this(Vec3 ka, Vec3 kd, Vec3 ks, float rflk = 0.0f, float alpha = 1.0f)
+  this(Vec3 ka, Vec3 kd, Vec3 ks, float rflk = 0.0f, float alpha = 1.0f) pure
   {
     this.ka = ka;
     this.kd = kd;

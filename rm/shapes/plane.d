@@ -8,7 +8,7 @@ class Plane : Shape
   Vec3 n;
   float coordOnN;
 
-  this(Vec3 pos, Vec3 n, Material mat)
+  this(Vec3 pos, Vec3 n, const(Material) mat)
   {
     super(mat);
     this.n = n.norm();

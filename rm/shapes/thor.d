@@ -5,13 +5,13 @@ import rm;
 
 class Thor : Shape
 {
-  Vec3 pos, n;
+  Vec3 center, n;
   float rBig, rSmall;
 
-  this(Vec3 pos, Vec3 n, float rBig, float rSmall, Material mat)
+  this(Vec3 center, Vec3 n, float rBig, float rSmall, const(Material) mat)
   {
     super(mat);
-    this.pos = pos;
+    this.center = center;
     this.n = n;
     this.rBig = rBig;
     this.rSmall = rSmall;
@@ -19,7 +19,7 @@ class Thor : Shape
 
   override float getDistance(Vec3 point)
   {
-    Vec3 a = point - pos;
+    Vec3 a = point - center;
     Vec3 b = n.cross(a.cross(n));
 
     if (b.isZero)
@@ -28,16 +28,16 @@ class Thor : Shape
       return sqrt(a.len2() + rBig ^^ 2) - rSmall;
     }
 
-    return (pos + b.norm() * rBig - point).len() - rSmall;
+    return (center + b.norm() * rBig - point).len() - rSmall;
   }
 
   override Vec3 getNorm(Vec3 point)
   {
-    Vec3 a = point - pos;
+    Vec3 a = point - center;
     Vec3 b = n.cross(a.cross(n));
 
     // assuming point is on surface - no corner cases:
-    Vec3 c = pos + b.norm() * rBig;
+    Vec3 c = center + b.norm() * rBig;
     return (point - c).norm();
   }
 }

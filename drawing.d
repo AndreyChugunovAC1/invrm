@@ -45,8 +45,7 @@ struct Buffer
     auto f = File(filename, "wb");
 
     f.write("P6\n", width, " ", height, " 255\n");
-    foreach (pixel; data)
-      f.rawWrite(pixel);
+    f.rawWrite(data);
     f.close();
   }
 }
