@@ -1,4 +1,4 @@
-# 3D File simulation
+# 3D Fire simulation
 
 Запуск
 -
