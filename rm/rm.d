@@ -1,4 +1,4 @@
-module rm.base.rm;
+module rm.rm;
 
 import std.math : abs, pow;
 import std.typecons : Nullable, nullable;
@@ -62,6 +62,11 @@ class Rm
   /// dir must be normalized before the function call
   /// for optimization purposes
   Vec3 traceRay(Vec3 start, Vec3 dir, uint depth = 0)
+  in
+  {
+    assert(abs(dir.len2 - 1.0f) < EPSILON);
+  }
+  body
   {
     if (depth >= recLimit)
     {
@@ -124,11 +129,59 @@ class Rm
     }
   }
 
-  Vec3 computeColor(float x, float y)
+  Vec3 computeColor(size_t xScreen, size_t yScreen)
   {
-    return 0.25 * (computeColorInner(x + 0.25, y + 0.25) + 
-      computeColorInner(x - 0.25, y + 0.25) + 
-      computeColorInner(x + 0.25, y - 0.25) + 
-      computeColorInner(x - 0.25, y - 0.25));
+    float x = xScreen;
+    float y = yScreen;
+
+    //dfmt off
+    // regular grid with 4 points per scren pixel:
+    return 0.25 * (
+      computeColorInner(x + 0.25f, y + 0.25f) +
+      computeColorInner(x + 0.25f, y + 0.75f) +
+      computeColorInner(x + 0.75f, y + 0.25f) +
+      computeColorInner(x + 0.75f, y + 0.75f)
+    );
+    //dfmt on
   }
+}
+
+Scene defaultScene()
+{
+  import rm;
+
+  auto mat = new immutable Material(
+    Vec3(0.05, 0.06, 0.15),
+    Vec3(0.05, 0.06, 0.15),
+    Vec3(0.05, 0.06, 0.15),
+    0.9
+  );
+  auto mat2 = new immutable Material(
+    Vec3(0.04, 0.01, 0.01),
+    Vec3(0.5, 0.1, 0.1),
+    Vec3(0.5, 0.1, 0.1),
+    0.9
+  );
+  auto mat3 = new immutable Material(
+    Vec3(0.04, 0.08, 0.06),
+    Vec3(0.1, 0.7, 0.1),
+    Vec3(0.3, 0.8, 0.1),
+    0.9
+  );
+
+  //dfmt off
+  return new Scene(
+    [
+      new Sphere(Vec3(20, 0, 20), 2.5, mat),
+      new Sphere(Vec3(10, 0, 20), 2.5, mat),
+      new Sphere(Vec3(20, 0, 10), 2.5, mat),
+      new Thor(Vec3(20, 5, 20), Vec3(0, 1, 0), 5, 1, mat2),
+      new Thor(Vec3(20, -5, 20), Vec3(0, 1, 0), 10, 1, mat3),
+    ],
+    [
+      new Light(Vec3(15, 20, 0), Vec3(1, 0.1, 0.1), Vec3(1, 0.1, 0.1)),
+      new Light(Vec3(0, -10, 20), Vec3(0.5, 0.4, 0.8), Vec3(1, 0.6, 0.8))
+    ],
+    Vec3(0.03, 0.042, 0.08));
+  //dfmt on
 }

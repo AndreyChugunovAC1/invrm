@@ -4,10 +4,13 @@ import std.range;
 import std.array;
 import std.conv : to, ConvException;
 import std.stdio;
+import std.range : iota;
+import std.parallelism : parallel;
 
 import rm;
 import geom;
 import drawing;
+import fire.fire;
 
 void printUsage() => writeln("Usage: ./exe <width> <height>");
 
@@ -33,48 +36,10 @@ void main(string[] args)
   }
 
   auto frame = Buffer(width, height);
-  auto mat = new immutable Material(
-    Vec3(0.05, 0.06, 0.15),
-    Vec3(0.05, 0.06, 0.15),
-    Vec3(0.05, 0.06, 0.15),
-    0.9
-  );
-  auto mat2 = new immutable Material(
-    Vec3(0.04, 0.01, 0.01),
-    Vec3(0.5, 0.1, 0.1),
-    Vec3(0.5, 0.1, 0.1),
-    0.9
-  );
-  auto mat3 = new immutable Material(
-    Vec3(0.04, 0.08, 0.06),
-    Vec3(0.1, 0.7, 0.1),
-    Vec3(0.3, 0.8, 0.1),
-    0.9
-  );
-
-  auto rm = new Rm(
-    User(Vec3(0, 0, 0), Vec3(1, 0, 1), 1, 1),
-    Scene([
-      new Circle(Vec3(20, 0, 20), 2.5, mat),
-      new Circle(Vec3(10, 0, 20), 2.5, mat),
-      new Circle(Vec3(20, 0, 10), 2.5, mat),
-      new Thor(Vec3(20, 5, 20), Vec3(0, 1, 0), 5, 1, mat2),
-      new Thor(Vec3(20, -5, 20), Vec3(0, 1, 0), 10, 1, mat3),
-      // new Thor(Vec3(30, 0, 0), Vec3(-1, 0, 0), 5, 1, mat2),
-      // new Plane(0, Vec3(0, 1, 0), mat)
-    ],
-    [
-      // new Light(Vec3(0), Vec3(1, 1, 1), Vec3(1, 1, 1)),
-      new Light(Vec3(15, 20, 0), Vec3(1, 0.1, 0.1), Vec3(1, 0.1, 0.1)),
-      new Light(Vec3(0, -10, 20), Vec3(0.5, 0.4, 0.8), Vec3(1, 0.6, 0.8))
-    ],
-    Vec3(0.03, 0.042, 0.08)));
-
+  auto fire = new Fire();
+  auto rm = new Rm(User(Vec3(10, 0, 0), Vec3(-1, 0, 0), 1, 0.5), fire.scene);
   rm.setWidthHeight(width, height)
-    .setRecLimit(3);
-
-  import std.range : iota;
-  import std.parallelism : parallel;
+    .setRecLimit(2);
 
   foreach (y; parallel(iota(frame.height)))
   {

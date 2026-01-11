@@ -6,14 +6,14 @@ import geom;
 import rm.shapes.shape;
 import rm.base.light;
 
-struct Scene
+class Scene
 {
   Shape[] shapes;
   Light[] lights;
   Vec3 fontColor;
   Vec3 illa;
 
-  this(Shape[] shapes, Light[] lights, Vec3 fontColor = Vec3.zero, Vec3 illa = Vec3(1))
+  this(Shape[] shapes, Light[] lights, Vec3 fontColor = Vec3.zero, Vec3 illa = Vec3(1)) pure
   {
     this.shapes = shapes;
     this.lights = lights;

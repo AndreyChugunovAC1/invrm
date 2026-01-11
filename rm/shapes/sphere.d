@@ -1,9 +1,9 @@
-module rm.shapes.circle;
+module rm.shapes.sphere;
 
 import geom;
 import rm;
 
-class Circle : Shape
+class Sphere : Shape
 {
   Vec3 center;
   float radius;
