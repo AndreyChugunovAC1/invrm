@@ -26,3 +26,5 @@ docs/
 # Other
 output.ppm
 test.d
+output/
+output/**

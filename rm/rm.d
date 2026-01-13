@@ -90,20 +90,23 @@ class Rm
     // lights:
     Vec3 toUser = (user.pos - curPoint).norm();
 
-    foreach (light; scene.lights)
+    version (none)
     {
-      Vec3 toLighting = (light.pos - curPoint).norm();
-
-      // TODO: smooth shadows
-      bool isNotShadowed = moveToNextIntersection(curPoint + toLighting * SMALL_VALUE, toLighting)
-        .isNull;
-
-      if (isNotShadowed)
+      foreach (light; scene.lights)
       {
-        Vec3 reflected = 2 * n * n.dot(toLighting) - toLighting; // automatically normalized
+        Vec3 toLighting = (light.pos - curPoint).norm();
 
-        color += (sh.mat.kd * toLighting.dot(n) * light.illd).clamp();
-        color += (sh.mat.ks * pow(toUser.dot(reflected), sh.mat.alpha) * light.ills).clamp();
+        // TODO: smooth shadows
+        bool isNotShadowed = moveToNextIntersection(curPoint + toLighting * SMALL_VALUE, toLighting)
+          .isNull;
+
+        if (isNotShadowed)
+        {
+          Vec3 reflected = 2 * n * n.dot(toLighting) - toLighting; // automatically normalized
+
+          color += (sh.mat.kd * toLighting.dot(n) * light.illd).clamp();
+          color += (sh.mat.ks * pow(toUser.dot(reflected), sh.mat.alpha) * light.ills).clamp();
+        }
       }
     }
 

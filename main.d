@@ -12,27 +12,29 @@ import geom;
 import drawing;
 import fire.fire;
 
-void printUsage() => writeln("Usage: ./exe <width> <height>");
+void printUsage() => writeln("Usage: ./exe <width> <height> <frame_count>");
 
-void main(string[] args)
+int main(string[] args)
 {
-  size_t width, height;
+  size_t width, height, frameCount;
 
-  if (args.length != 3)
+  if (args.length != 4)
   {
     printUsage();
-    return;
+    return 1000 - 7;
   }
 
   try
   {
     width = to!size_t(args[1]);
     height = to!size_t(args[2]);
+    frameCount = to!size_t(args[3]);
   }
   catch (ConvException e)
   {
     writeln("Can not convert all arguments to positive integer values.");
     printUsage();
+    return 1000 - 7;
   }
 
   auto frame = Buffer(width, height);
@@ -41,13 +43,24 @@ void main(string[] args)
   rm.setWidthHeight(width, height)
     .setRecLimit(2);
 
-  foreach (y; parallel(iota(frame.height)))
+  fire.updateParticles(100_000);
+  foreach (i; 0 .. frameCount)
   {
-    foreach (x; parallel(iota(frame.width)))
+    write("Rendering ", i, " ");
+    stdout.flush();
+    foreach (y; parallel(iota(frame.height)))
     {
-      frame[x, y] = Color.fromVec3(rm.computeColor(x, y));
+      foreach (x; parallel(iota(frame.width)))
+      {
+        frame[x, y] = Color.fromVec3(rm.computeColor(x, y));
+      }
     }
+    write("writing...");
+    stdout.flush();
+    import std.format;
+    frame.dumpBufferToPPM(format("output/output%03d.ppm", i));
+    writeln(" done");
+    fire.updateParticles(15);
   }
-
-  frame.dumpBufferToPPM("output.ppm");
+  return 0;
 }
