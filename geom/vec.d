@@ -12,7 +12,6 @@ struct Vec(size_t N) if (N > 1)
 
   alias coords this;
   alias VecCur = Vec!N;
-  // TODO: cache vector components, and make it all immutable
 
   enum zero = VecCur(0);
   enum one = VecCur(1);
@@ -46,7 +45,7 @@ struct Vec(size_t N) if (N > 1)
   }
 
   VecCur opBinary(string op, R)(R rhs) const pure
-  if (isNumeric!R)
+  if (__traits(compiles, R.init * coords[0]))
   {
     VecCur res = void;
     mixin("res.coords[] = coords[]" ~ op ~ "rhs;");
@@ -152,9 +151,21 @@ struct Vec(size_t N) if (N > 1)
   /// If vector has almost zero length, when there is no guarantee.
   VecCur anyPerp() const
   {
-    static if (N == 2)
+    static if (N % 2 == 0)
     {
-      return VecCur(coords[1], -coords[0]);
+      mixin("return VecCur(" ~ () {
+        import std.conv;
+
+        string args = "";
+        foreach (i; 0 .. N / 2)
+        {
+          args ~= ", ";
+          args ~= "coords[" ~ to!string(2 * i + 1) ~ "]";
+          args ~= ", ";
+          args ~= "-coords[" ~ to!string(2 * i) ~ "]";
+        }
+        return args[2 .. $];
+      }() ~ ");");
     }
     else static if (N == 3)
     {
