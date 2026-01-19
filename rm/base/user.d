@@ -2,7 +2,7 @@ module rm.base.user;
 
 import geom;
 
-struct User
+class User
 {
   Vec3 pos;
   Vec3 dir;

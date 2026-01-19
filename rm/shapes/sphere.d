@@ -8,7 +8,7 @@ class Sphere : Shape
   Vec3 center;
   float radius;
 
-  this(Vec3 center, float radius, const(Material) mat)
+  this(Vec3 center, float radius, Material mat)
   {
     super(mat);
     this.center = center;

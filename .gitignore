@@ -28,3 +28,4 @@ output.ppm
 test.d
 output/
 output/**
+output.gif

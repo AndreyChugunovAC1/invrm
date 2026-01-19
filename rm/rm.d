@@ -90,15 +90,20 @@ class Rm
     // lights:
     Vec3 toUser = (user.pos - curPoint).norm();
 
-    version (none)
+    version (all)
     {
       foreach (light; scene.lights)
       {
         Vec3 toLighting = (light.pos - curPoint).norm();
 
         // TODO: smooth shadows
-        bool isNotShadowed = moveToNextIntersection(curPoint + toLighting * SMALL_VALUE, toLighting)
-          .isNull;
+        version (none) 
+        {
+          bool isNotShadowed = moveToNextIntersection(curPoint + toLighting * SMALL_VALUE, toLighting)
+            .isNull;
+        } else {
+          bool isNotShadowed = true;
+        }
 
         if (isNotShadowed)
         {
@@ -153,19 +158,19 @@ Scene defaultScene()
 {
   import rm;
 
-  auto mat = new immutable Material(
+  auto mat = new Material(
     Vec3(0.05, 0.06, 0.15),
     Vec3(0.05, 0.06, 0.15),
     Vec3(0.05, 0.06, 0.15),
     0.9
   );
-  auto mat2 = new immutable Material(
+  auto mat2 = new Material(
     Vec3(0.04, 0.01, 0.01),
     Vec3(0.5, 0.1, 0.1),
     Vec3(0.5, 0.1, 0.1),
     0.9
   );
-  auto mat3 = new immutable Material(
+  auto mat3 = new Material(
     Vec3(0.04, 0.08, 0.06),
     Vec3(0.1, 0.7, 0.1),
     Vec3(0.3, 0.8, 0.1),

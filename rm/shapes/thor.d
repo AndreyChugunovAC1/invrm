@@ -8,7 +8,7 @@ class Thor : Shape
   Vec3 center, n;
   float rBig, rSmall;
 
-  this(Vec3 center, Vec3 n, float rBig, float rSmall, const(Material) mat)
+  this(Vec3 center, Vec3 n, float rBig, float rSmall, Material mat)
   {
     super(mat);
     this.center = center;

@@ -7,9 +7,9 @@ import rm.base.material;
 
 abstract class Shape
 {
-  const(Material) mat;
+  Material mat;
 
-  this(const(Material) mat)
+  this(Material mat)
   {
     this.mat = mat;
   }

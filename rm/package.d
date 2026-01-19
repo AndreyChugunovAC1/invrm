@@ -7,6 +7,7 @@ public import
   rm.base.user,
   rm.base.light,
   rm.shapes.shape,
+  rm.shapes.mix,
   rm.shapes.thor,
   rm.shapes.sphere,
   rm.shapes.plane;

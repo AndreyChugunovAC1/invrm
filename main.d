@@ -39,11 +39,15 @@ int main(string[] args)
 
   auto frame = Buffer(width, height);
   auto fire = new Fire();
-  auto rm = new Rm(User(Vec3(10, 0, 0), Vec3(-1, 0, 0), 1, 0.5), fire.scene);
+  auto user = new User(Vec3(10, 1, 0), Vec3(-1, 0, 0), 1, 0.5);
+  auto rm = new Rm(user, fire.scene);
   rm.setWidthHeight(width, height)
     .setRecLimit(2);
 
-  fire.updateParticles(100_000);
+  for (size_t i = 0; i < 1000; i++)
+  {
+    fire.updateParticles(0.1f);
+  }
   foreach (i; 0 .. frameCount)
   {
     write("Rendering ", i, " ");
@@ -55,12 +59,14 @@ int main(string[] args)
         frame[x, y] = Color.fromVec3(rm.computeColor(x, y));
       }
     }
+
     write("writing...");
     stdout.flush();
     import std.format;
+
     frame.dumpBufferToPPM(format("output/output%03d.ppm", i));
     writeln(" done");
-    fire.updateParticles(15);
+    fire.updateParticles(0.03f);
   }
   return 0;
 }
