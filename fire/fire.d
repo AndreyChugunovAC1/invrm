@@ -23,8 +23,8 @@ final class Fire
     Light[] lights = [
       new Light(Vec3(10, 0, 0), Vec3(0.6), Vec3(0.5)),
       new Light(Vec3(-10, 0, 0), Vec3(0.6), Vec3(0.5)),
-      new Light(Vec3(10, 0, 10), Vec3(0.6), Vec3(0.5)),
-      new Light(Vec3(10, 0, -10), Vec3(0.6), Vec3(0.5))
+      new Light(Vec3(0, 0, 10), Vec3(0.6), Vec3(0.5)),
+      new Light(Vec3(0, 0, -10), Vec3(0.6), Vec3(0.5))
     ];
     this.particles = new Particle[300];
     foreach (ref particle; particles)

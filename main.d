@@ -60,13 +60,22 @@ int main(string[] args)
       }
     }
 
+    version (none)
+    {
+      import std.math;
+
+      float c = cos(i / 30.0);
+      float s = sin(i / 30.0);
+      user.update(Vec3(10 * c, 1, 10 * s), Vec3(-c, 0.0, -s));
+    }
+
     write("writing...");
     stdout.flush();
     import std.format;
 
     frame.dumpBufferToPPM(format("output/output%03d.ppm", i));
     writeln(" done");
-    fire.updateParticles(0.03f);
+    fire.updateParticles(0.01f);
   }
   return 0;
 }

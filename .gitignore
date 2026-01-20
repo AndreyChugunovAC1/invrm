@@ -29,3 +29,6 @@ test.d
 output/
 output/**
 output.gif
+output.gif
+res5_blur.gif
+test.c
