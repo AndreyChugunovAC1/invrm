@@ -60,7 +60,7 @@ int main(string[] args)
       }
     }
 
-    version (none)
+    version (all)
     {
       import std.math;
 
